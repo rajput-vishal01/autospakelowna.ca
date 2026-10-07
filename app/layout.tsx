@@ -34,7 +34,7 @@ const themeScript = `(function(){try{var t=localStorage.getItem("theme");if(t===
 
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "AutoDetailing",
+  "@type": "AutomotiveBusiness",
   name: "Auto Spa Kelowna",
   url: SITE,
   telephone: "+1-236-660-7227",

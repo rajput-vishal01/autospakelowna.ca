@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { GUARANTEES, type Metric, METRICS, PHOTO, PROCESS, SERVICES, SPECIALTY } from "./brand";
@@ -5,6 +6,8 @@ import { Effects } from "./effects";
 import { ReviewsSection } from "./reviews-section";
 import { HeroImage, Nav } from "./site";
 import { Arrows, Button, Eyebrow, Flip, Icon, Odometer, reveal } from "./ui";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default function Home() {
   return (

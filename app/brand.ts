@@ -291,3 +291,9 @@ export function slotsFor(weekday: number): string[] {
   if (weekday === 0) return [];
   return weekday === 6 ? SATURDAY_SLOTS : WEEKDAY_SLOTS;
 }
+
+// "2:30 PM" -> 870 minutes after midnight.
+export function slotMinutes(slot: string): number {
+  const [, h, m, period] = slot.match(/^(\d{1,2}):(\d{2}) (AM|PM)$/) ?? [];
+  return ((Number(h) % 12) + (period === "PM" ? 12 : 0)) * 60 + Number(m);
+}

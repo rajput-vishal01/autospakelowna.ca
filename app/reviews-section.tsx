@@ -18,17 +18,22 @@ function initials(name: string) {
 function ReviewCard({ review, isRepeat }: { review: Review; isRepeat: boolean }) {
   return (
     <figure className="card tm-card" aria-hidden={isRepeat}>
-      {review.photo ? (
-        <Image src={review.photo} alt="" width={60} height={60} />
-      ) : (
-        <span className="tm-avatar">{initials(review.author)}</span>
-      )}
+      {/* Google policy: author name and photo link to the author profile. */}
+      <a href={review.profile} target="_blank" rel="noopener noreferrer" tabIndex={-1} aria-hidden>
+        {review.photo ? (
+          <Image src={review.photo} alt="" width={60} height={60} />
+        ) : (
+          <span className="tm-avatar">{initials(review.author)}</span>
+        )}
+      </a>
       <blockquote>{review.text}</blockquote>
       <hr />
       <figcaption>
-        <span className="tm-name">{review.author}</span>
+        <a className="tm-name" href={review.profile} target="_blank" rel="noopener noreferrer">
+          {review.author}
+        </a>
         <span>
-          <span aria-label={`${review.rating} out of 5 stars`}>{"★".repeat(Math.round(review.rating))}</span>
+          <span role="img" aria-label={`${review.rating} out of 5 stars`}>{"★".repeat(Math.round(review.rating))}</span>
           {review.when && ` · ${review.when}`}
         </span>
       </figcaption>
@@ -55,7 +60,7 @@ export async function ReviewsSection() {
               : "Rated 5.0 by Okanagan drivers on Google."}
           </p>
         </div>
-        {reviews.length > 0 && (
+        {summary && reviews.length > 0 && (
           <div className="tm" {...reveal("fade", 0.4)}>
             {Array.from({ length: COLUMNS }, (_, col) => (
               <div key={col} className="tm-col">
@@ -75,6 +80,7 @@ export async function ReviewsSection() {
             <div className="tm-fade end" />
           </div>
         )}
+        {summary && <p className="tm-attribution">Reviews from Google</p>}
         <div className="section-btn center" {...reveal("slide", 0.5)}>
           <Button href={url}>{summary ? `Read All ${summary.count} Reviews` : "Read Our Google Reviews"}</Button>
         </div>

@@ -38,14 +38,19 @@ export async function getGoogleReviews(): Promise<ReviewSummary | null> {
         "X-Goog-Api-Key": key,
         "X-Goog-FieldMask": "rating,userRatingCount,googleMapsUri,reviews",
       },
+      signal: AbortSignal.timeout(5_000),
     });
     if (!res.ok) throw new Error(`Places API ${res.status}: ${await res.text()}`);
     const place = (await res.json()) as PlaceResponse;
+    if (!place.rating || !place.userRatingCount) {
+      cacheLife("hours");
+      return null;
+    }
 
     cacheLife("days");
     return {
-      rating: place.rating ?? 5,
-      count: place.userRatingCount ?? 0,
+      rating: place.rating,
+      count: place.userRatingCount,
       url: place.googleMapsUri ?? CONTACT.maps,
       reviews: (place.reviews ?? [])
         .filter((r) => r.text?.text && r.authorAttribution?.displayName)

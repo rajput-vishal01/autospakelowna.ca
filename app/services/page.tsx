@@ -73,7 +73,7 @@ function Detailing() {
             <Eyebrow>Auto Detailing</Eyebrow>
             <h2>Three Packages, Priced by Size</h2>
           </div>
-          <p>Each package is priced for an SUV or whiteSedan, a truck, or a 3-row vehicle. Add-ons are listed below.</p>
+          <p>Each package is priced for an SUV or sedan, a truck, or a 3-row vehicle. Add-ons are listed below.</p>
         </div>
         <div className="models" {...reveal("fade", 0.4)}>
           {PACKAGES.map((p) => (
@@ -104,6 +104,9 @@ function Detailing() {
               <div className="stack">
                 <h3>{p.name}</h3>
                 <p>{p.blurb}</p>
+                {/* Prices repeat here because the deck hides its spec row on phones. */}
+                <p className="price">From {p.prices[0]}</p>
+                <p>{VEHICLE_CLASSES.map((c, i) => `${c} ${p.prices[i]}`).join(" · ")}</p>
               </div>
               <div className="stack">
                 <span className="eyebrow">Interior</span>

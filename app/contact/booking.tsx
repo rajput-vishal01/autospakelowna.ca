@@ -2,7 +2,7 @@
 
 import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { useActionState, useState, useSyncExternalStore } from "react";
-import { BOOKABLE, slotsFor } from "../brand";
+import { BOOKABLE, slotMinutes, slotsFor } from "../brand";
 import { type BookingState, requestBooking } from "./actions";
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -35,6 +35,8 @@ export function Booking() {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [monthOffset, setMonthOffset] = useState(0);
+  const [cameBack, setCameBack] = useState(false);
+  const typed = state.values ?? {};
 
   if (state.status === "success") {
     return (
@@ -56,7 +58,12 @@ export function Booking() {
     ...Array<null>(view.getDay()).fill(null),
     ...Array.from({ length: daysInMonth }, (_, i) => new Date(view.getFullYear(), view.getMonth(), i + 1)),
   ];
-  const slots = date ? slotsFor(fromIso(date).getDay()) : [];
+  // Only runs in the browser (today is null on the server), so reading the clock here cannot mismatch.
+  const now = new Date();
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+  const openSlots = (iso: string) =>
+    slotsFor(fromIso(iso).getDay()).filter((s) => iso !== today || slotMinutes(s) > nowMinutes);
+  const slots = date ? openSlots(date) : [];
 
   return (
     <form action={action} className="card booking">
@@ -68,12 +75,12 @@ export function Booking() {
       <input type="hidden" name="service" value={service} />
       <input type="hidden" name="date" value={date} />
       <input type="hidden" name="time" value={time} />
-      {/* Honeypot for bots; hidden from people and assistive tech. */}
-      <input className="hp" type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden />
+      {/* Honeypot for bots: display:none and an unguessable name, so autofill never fills it. */}
+      <input className="hp" type="text" name="bk_hp_7f2" tabIndex={-1} autoComplete="off" aria-hidden />
 
       {step === "schedule" ? (
         <>
-          <select className="field" value={service} onChange={(e) => setService(e.target.value)} aria-label="Service" required>
+          <select className="field" autoFocus={cameBack} value={service} onChange={(e) => setService(e.target.value)} aria-label="Service" required>
             <option value="">Select a service…</option>
             {BOOKABLE.map((s) => (
               <option key={s}>{s}</option>
@@ -100,7 +107,7 @@ export function Booking() {
                 {cells.map((d, i) => {
                   if (!d) return <span key={`blank-${i}`} />;
                   const iso = isoDate(d);
-                  const isClosed = iso < today || slotsFor(d.getDay()).length === 0;
+                  const isClosed = iso < today || openSlots(iso).length === 0;
                   return (
                     <button
                       key={iso}
@@ -143,14 +150,17 @@ export function Booking() {
             {service} · {LONG_DATE.format(fromIso(date))} at {time}
           </p>
           <div className="contact-fields">
-            <input className="field" name="firstName" placeholder="First Name" aria-label="First name" autoComplete="given-name" required maxLength={100} />
-            <input className="field" name="lastName" placeholder="Last Name" aria-label="Last name" autoComplete="family-name" required maxLength={100} />
-            <input className="field" name="email" type="email" placeholder="Email Address" aria-label="Email address" autoComplete="email" required maxLength={256} />
-            <input className="field" name="phone" type="tel" placeholder="Phone Number" aria-label="Phone number" autoComplete="tel" required maxLength={20} />
-            <textarea className="field" name="vehicle" placeholder="Year, make, model and anything we should know" aria-label="Vehicle details" maxLength={2000} />
+            <input className="field" name="firstName" defaultValue={typed.firstName} autoFocus placeholder="First Name" aria-label="First name" autoComplete="given-name" required maxLength={100} />
+            <input className="field" name="lastName" defaultValue={typed.lastName} placeholder="Last Name" aria-label="Last name" autoComplete="family-name" required maxLength={100} />
+            <input className="field" name="email" defaultValue={typed.email} type="email" placeholder="Email Address" aria-label="Email address" autoComplete="email" required maxLength={256} />
+            <input className="field" name="phone" defaultValue={typed.phone} type="tel" placeholder="Phone Number" aria-label="Phone number" autoComplete="tel" required maxLength={20} />
+            <textarea className="field" name="vehicle" defaultValue={typed.vehicle} placeholder="Year, make, model and anything we should know" aria-label="Vehicle details" maxLength={2000} />
           </div>
           <div className="booking-actions">
-            <button type="button" className="form-button ghost" onClick={() => setStep("schedule")}>
+            <button type="button" className="form-button ghost" onClick={() => {
+                setCameBack(true);
+                setStep("schedule");
+              }}>
               Back
             </button>
             <button type="submit" className="form-button" disabled={isPending}>

@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
       // Placeholder photography until the shop supplies its own.
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/photo-**" },
       // Google review author avatars.
-      { protocol: "https", hostname: "lh3.googleusercontent.com", pathname: "/**" },
+      { protocol: "https", hostname: "**.googleusercontent.com", pathname: "/**" },
     ],
   },
   // Keep links to the old site's pages working.
