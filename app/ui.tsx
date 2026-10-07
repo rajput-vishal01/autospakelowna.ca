@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
-import { asset } from "./content";
+import { asset, type Metric } from "./content";
 
 // Cube-roll hover: label + rotated duplicate, animated in globals.css.
 export function Flip({ children }: { children: ReactNode }) {
@@ -48,6 +48,31 @@ export function Eyebrow({ children }: { children: string }) {
 // Once-only scroll-into-view entrance; Effects adds `.in`, CSS does the rest.
 export function reveal(kind: "slide" | "fade" | "grow", delay = 0) {
   return { "data-reveal": kind, style: { "--delay": `${delay}s` } as CSSProperties };
+}
+
+// Digit columns roll when the nearest `.metric` ancestor gets `.in` (see globals.css).
+export function Odometer({ parts, symbol, value }: Omit<Metric, "label">) {
+  return (
+    <>
+      <div className="num" aria-hidden>
+        {parts.map((part, i) =>
+          typeof part === "string" ? (
+            <span key={i}>{part}</span>
+          ) : (
+            <span key={i} className="win">
+              <span className={`col ${part.dir}`}>
+                {[...part.digits].map((d, j) => (
+                  <span key={j}>{d}</span>
+                ))}
+              </span>
+            </span>
+          ),
+        )}
+        <span className="sym">{symbol}</span>
+      </div>
+      <span className="sr-only">{value}</span>
+    </>
+  );
 }
 
 export function SearchForm({ className }: { className: string }) {

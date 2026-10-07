@@ -1,29 +1,24 @@
-import Image, { getImageProps } from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import {
   asset,
   benefits,
   featured,
-  mainPages,
   type Metric,
   metrics,
-  modelNames,
   posts,
   slug,
-  socials,
   specLabels,
   steps,
   testimonialColumns,
 } from "./content";
 import { Effects } from "./effects";
-import { Arrows, Button, Eyebrow, Flip, reveal, SearchForm } from "./ui";
+import { HeroImage, Nav } from "./site";
+import { Arrows, Button, Eyebrow, Flip, Odometer, reveal } from "./ui";
 
 export default function Home() {
   return (
     <>
-      <div className="cursor-wrap" aria-hidden>
-        <div className="cursor" />
-      </div>
       <Hero />
       <main>
         <About />
@@ -33,68 +28,11 @@ export default function Home() {
         <Steps />
         <Blog />
       </main>
-      <Footer />
       <Effects />
     </>
   );
 }
 
-function HeroImage() {
-  // Art direction: dedicated mobile crop at <=767px. fetchPriority instead of preload so only one source loads.
-  const common = { alt: "Matte black sports coupe with neon yellow wheel rims", fill: true, sizes: "(max-width: 1440px) 100vw, 1400px" };
-  const { props: { srcSet: mobile } } = getImageProps({ ...common, src: asset.heroMobile });
-  const { props } = getImageProps({ ...common, src: asset.heroDesktop });
-  return (
-    <picture>
-      <source media="(max-width: 767px)" srcSet={mobile} sizes={common.sizes} />
-      <img {...props} alt={props.alt} className="hero-img" loading="eager" fetchPriority="high" />
-    </picture>
-  );
-}
-
-function Nav() {
-  return (
-    <nav className="nav" aria-label="Main">
-      <Link href="/" className="logo" aria-label="Rydex home">
-        <Flip>
-          <Image src={asset.logo} alt="" width={85} height={24} />
-        </Flip>
-      </Link>
-      <div className="nav-right">
-        <div className="nav-pill frost">
-          <button className="models-toggle" popoverTarget="models-menu">
-            <Flip>Models</Flip>
-            <Image className="dd-arrow" src={asset.arrowDown} alt="" width={16} height={16} />
-          </button>
-          <SearchForm className="search" />
-        </div>
-        <button className="menu-btn frost" popoverTarget="site-menu" aria-label="Menu">
-          <span />
-          <span />
-          <span />
-        </button>
-      </div>
-      <div id="models-menu" popover="auto" className="pop">
-        {modelNames.map((name) => (
-          <Link key={name} href={`/models/${slug(name)}`}>
-            <Flip>{name}</Flip>
-          </Link>
-        ))}
-      </div>
-      <div id="site-menu" popover="auto" className="pop menu-panel">
-        {mainPages.map((p) => (
-          <Link key={p.label} href={p.href} className="menu-link">
-            <Flip>{p.label}</Flip>
-          </Link>
-        ))}
-        <Button href="/models" variant="secondary" className="btn-block">
-          Book Now
-        </Button>
-        <SearchForm className="search search-mobile" />
-      </div>
-    </nav>
-  );
-}
 
 function Hero() {
   return (
@@ -102,7 +40,7 @@ function Hero() {
       <div className="wrap-lg">
         <div className="hero">
           <div className="hero-media">
-            <HeroImage />
+            <HeroImage desktop={asset.heroDesktop} mobile={asset.heroMobile} alt="Matte black sports coupe with neon yellow wheel rims" />
           </div>
           <Nav />
           <div className="hero-texts">
@@ -141,23 +79,7 @@ function Hero() {
 function Counter({ value, label, parts, symbol }: Metric) {
   return (
     <div className="metric" {...reveal("slide", 0.4)}>
-      <div className="num" aria-hidden>
-        {parts.map((part, i) =>
-          typeof part === "string" ? (
-            <span key={i}>{part}</span>
-          ) : (
-            <span key={i} className="win">
-              <span className={`col ${part.dir}`}>
-                {[...part.digits].map((d, j) => (
-                  <span key={j}>{d}</span>
-                ))}
-              </span>
-            </span>
-          ),
-        )}
-        <span className="sym">{symbol}</span>
-      </div>
-      <span className="sr-only">{value}</span>
+      <Odometer parts={parts} symbol={symbol} value={value} />
       <p className="medium">{label}</p>
     </div>
   );
@@ -360,80 +282,5 @@ function Blog() {
         </div>
       </div>
     </section>
-  );
-}
-
-function FooterLink({ href, children }: { href: string; children: string }) {
-  const external = href.startsWith("http");
-  return (
-    <Link href={href} {...(external && { target: "_blank", rel: "noopener noreferrer" })}>
-      <Flip>{children}</Flip>
-    </Link>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className="footer">
-      <div className="wrap" {...reveal("fade", 0.3)}>
-        <div className="footer-top">
-          <div className="footer-brand">
-            <Link href="/" className="logo" aria-label="Rydex home">
-              <Flip>
-                <Image src={asset.logo} alt="" width={85} height={24} />
-              </Flip>
-            </Link>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit suspendisse varius enim in eros.</p>
-            <Button href="/models" variant="secondary">
-              Book Now
-            </Button>
-          </div>
-          <div className="footer-links">
-            <div className="footer-col">
-              <span>Main Pages</span>
-              {mainPages.map((p) => (
-                <FooterLink key={p.label} href={p.href}>
-                  {p.label}
-                </FooterLink>
-              ))}
-            </div>
-            <div className="footer-col">
-              <span>Follow Us</span>
-              {socials.map((s) => (
-                <FooterLink key={s.label} href={s.href}>
-                  {s.label}
-                </FooterLink>
-              ))}
-            </div>
-            <div className="footer-col">
-              <span>Visit Us</span>
-              <address>19 Jumeirah Beach Road, Umm Suqeim, UAE.</address>
-            </div>
-            <div className="footer-col">
-              <span>Contact us</span>
-              <a href="tel:+11234567890">
-                <Flip>+1 (123) 456-7890</Flip>
-              </a>
-              <a href="mailto:info@rydex.com">
-                <Flip>info@rydex.com</Flip>
-              </a>
-            </div>
-          </div>
-        </div>
-        <div className="footer-bottom">
-          <p>
-            Powered by <a href="https://webflow.com" target="_blank" rel="noopener noreferrer">Webflow</a> Designed by{" "}
-            <a href="https://webflow.com/templates/designers/am-templates" target="_blank" rel="noopener noreferrer">
-              AM Templates
-            </a>
-          </p>
-          <div className="footer-legal">
-            <FooterLink href="/style-guide">Style Guide</FooterLink>
-            <FooterLink href="/licenses">Licenses</FooterLink>
-            <FooterLink href="/changelog">Changelog</FooterLink>
-          </div>
-        </div>
-      </div>
-    </footer>
   );
 }

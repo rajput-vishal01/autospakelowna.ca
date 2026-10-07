@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Figtree } from "next/font/google";
 import { asset } from "./content";
+import { Footer } from "./site";
 import "./globals.css";
 
 const figtree = Figtree({
@@ -23,7 +24,13 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={figtree.variable}>
-      <body>{children}</body>
+      <body>
+        <div className="cursor-wrap" aria-hidden>
+          <div className="cursor" />
+        </div>
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }
