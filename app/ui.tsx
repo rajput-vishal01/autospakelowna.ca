@@ -1,7 +1,7 @@
-import Image from "next/image";
+import { ArrowRight, Car, Check, Droplets, Gauge, ReceiptText, Scissors, Search, ShieldCheck, Sparkles } from "lucide-react";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
-import { asset, type Metric } from "./content";
+import type { Metric } from "./brand";
 
 // Cube-roll hover: label + rotated duplicate, animated in globals.css.
 export function Flip({ children }: { children: ReactNode }) {
@@ -13,12 +13,12 @@ export function Flip({ children }: { children: ReactNode }) {
   );
 }
 
-// Arrow slides out right while its twin slides in from the left.
-export function Arrows({ src, size }: { src: string; size: number }) {
+// Arrow slides out right while its twin slides in from the left. Icons take currentColor.
+export function Arrows({ size }: { size: number }) {
   return (
     <span className="arrows" aria-hidden>
-      <Image src={src} alt="" width={size} height={size} />
-      <Image src={src} alt="" width={size} height={size} />
+      <ArrowRight size={size} strokeWidth={1.75} />
+      <ArrowRight size={size} strokeWidth={1.75} />
     </span>
   );
 }
@@ -35,7 +35,7 @@ export function Button({ href, children, variant = "primary", className = "" }: 
     <Link href={href} className={`btn btn-${variant} ${className}`}>
       <Flip>{children}</Flip>
       <span className="btn-tile">
-        <Arrows src={asset.arrowRight} size={20} />
+        <Arrows size={20} />
       </span>
     </Link>
   );
@@ -46,7 +46,7 @@ export function Eyebrow({ children }: { children: string }) {
 }
 
 // Once-only scroll-into-view entrance; Effects adds `.in`, CSS does the rest.
-// image = noir curtain slides up + image settles; zoom = image settles only.
+// image = curtain slides up + image settles; zoom = image settles only.
 export function reveal(kind: "slide" | "fade" | "grow" | "image" | "zoom", delay = 0) {
   return { "data-reveal": kind, style: { "--delay": `${delay}s` } as CSSProperties };
 }
@@ -76,13 +76,22 @@ export function Odometer({ parts, symbol, value }: Omit<Metric, "label">) {
   );
 }
 
-export function SearchForm({ className }: { className: string }) {
-  return (
-    <form action="/search" role="search" className={className}>
-      <input type="search" name="query" placeholder="Search…" aria-label="Search" maxLength={256} required />
-      <button type="submit" aria-label="Submit search">
-        <Image src={asset.search} alt="" width={18} height={18} />
-      </button>
-    </form>
-  );
+const ICONS = {
+  shield: ShieldCheck,
+  receipt: ReceiptText,
+  gauge: Gauge,
+  car: Car,
+  search: Search,
+  droplets: Droplets,
+  sparkles: Sparkles,
+  scissors: Scissors,
+  check: Check,
+};
+
+export type IconName = keyof typeof ICONS;
+
+// Line icons in the accent colour (benefit rings, step cards).
+export function Icon({ name, size = 28 }: { name: IconName; size?: number }) {
+  const Glyph = ICONS[name];
+  return <Glyph className="line-icon" size={size} strokeWidth={1.5} aria-hidden />;
 }

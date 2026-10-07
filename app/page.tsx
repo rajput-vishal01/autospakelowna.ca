@@ -1,38 +1,27 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  asset,
-  benefits,
-  featured,
-  type Metric,
-  metrics,
-  posts,
-  slug,
-  specLabels,
-  steps,
-  testimonialColumns,
-} from "./content";
+import { GUARANTEES, type Metric, METRICS, PHOTO, PROCESS, SERVICES, SPECIALTY } from "./brand";
 import { Effects } from "./effects";
+import { ReviewsSection } from "./reviews-section";
 import { HeroImage, Nav } from "./site";
-import { Arrows, Button, Eyebrow, Flip, Odometer, reveal } from "./ui";
+import { Arrows, Button, Eyebrow, Flip, Icon, Odometer, reveal } from "./ui";
 
 export default function Home() {
   return (
     <>
       <Hero />
       <main>
-        <About />
-        <Featured />
-        <Benefits />
-        <Testimonials />
-        <Steps />
-        <Blog />
+        <Studio />
+        <Services />
+        <Guarantees />
+        <ReviewsSection />
+        <Process />
+        <Specialty />
       </main>
       <Effects />
     </>
   );
 }
-
 
 function Hero() {
   return (
@@ -40,31 +29,31 @@ function Hero() {
       <div className="wrap-lg">
         <div className="hero">
           <div className="hero-media">
-            <HeroImage desktop={asset.heroDesktop} mobile={asset.heroMobile} alt="Matte black sports coupe with neon yellow wheel rims" />
+            <HeroImage desktop={PHOTO.heroDesktop} mobile={PHOTO.heroMobile} alt="Black sports car being pressure washed" />
           </div>
           <Nav />
           <div className="hero-texts">
             <div className="hero-top">
               <div className="hero-loc">
-                <span>Dubai, UAE</span>
+                <span>Kelowna, BC</span>
                 <span className="hero-divider" />
-                <span className="hero-tag">Prime Collection by Rydex!</span>
+                <span className="hero-tag">Detailing and Ceramic Studio</span>
               </div>
-              <p>Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet nunc ut.</p>
+              <p>Inspected under correction lighting, quoted at a fixed price, protected in writing.</p>
             </div>
             <div className="hero-bottom">
               <div className="hero-heading">
-                <Eyebrow>Car Rental</Eyebrow>
-                <h1>Enjoy Easy Rides, Pick Your Way</h1>
+                <Eyebrow>Kelowna Studio</Eyebrow>
+                <h1>Showroom Finish, Measured and Protected</h1>
               </div>
               <div className="hero-buttons">
                 {[
-                  ["Book a Car", "/models"],
-                  ["Get in Touch", "/contact"],
+                  ["Book a Detail", "/contact"],
+                  ["View Services", "/services"],
                 ].map(([label, href]) => (
                   <Link key={href} href={href} className="hero-btn">
                     <Flip>{label}</Flip>
-                    <Arrows src={asset.heroArrow} size={24} />
+                    <Arrows size={24} />
                   </Link>
                 ))}
               </div>
@@ -85,29 +74,29 @@ function Counter({ value, label, parts, symbol }: Metric) {
   );
 }
 
-function About() {
+function Studio() {
   return (
     <section className="section">
       <div className="wrap about">
         <div className="about-side" {...reveal("slide", 0.3)}>
-          <Eyebrow>About Us</Eyebrow>
+          <Eyebrow>The Studio</Eyebrow>
         </div>
         <div className="about-main">
           <h2 {...reveal("slide", 0.4)}>
-            Discover the passion and expertise behind Rydex, your premier destination for luxury car rentals and
-            unmatched service.
+            A detailing studio, not a car wash. We measure your paint, correct what is there, and protect it with a
+            warranty you can hold.
           </h2>
           <div className="metrics">
-            {metrics.map((m) => (
+            {METRICS.map((m) => (
               <Counter key={m.label} {...m} />
             ))}
           </div>
           <div className="about-cta" {...reveal("slide", 0.4)}>
             <p>
-              Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor
-              interdum nulla, ut commodo diam libero vitae erat aenean.
+              Every vehicle starts with an inspection under correction lighting and paint depth readings, before a
+              single pad touches the clear coat.
             </p>
-            <Button href="/about">Learn More</Button>
+            <Button href="/about">About the Studio</Button>
           </div>
         </div>
       </div>
@@ -115,33 +104,32 @@ function About() {
   );
 }
 
-function Featured() {
+function Services() {
   return (
     <section className="section">
       <div className="wrap">
         <div className="head-row" {...reveal("slide", 0.3)}>
           <div className="head">
-            <Eyebrow>Our Models</Eyebrow>
-            <h2>Our Featured Models</h2>
+            <Eyebrow>Our Services</Eyebrow>
+            <h2>What We Do Best</h2>
           </div>
-          <p>Aenean faucibus nibh et justo cursus id rutrum lorem imperdiet. Nunc ut sem vitae.</p>
+          <p>Four services, each confirmed with a fixed quote after inspection. Prices start at the numbers below.</p>
         </div>
         <div className="models" {...reveal("fade", 0.4)}>
-          {featured.map((m) => (
-            <div key={m.name} className="model-item">
-              <Link href={`/models/${slug(m.name)}`} className="model-card">
-                <Image className="model-img" src={m.image} alt={m.name} fill sizes="(max-width: 1355px) 100vw, 1315px" />
+          {SERVICES.map((s) => (
+            <div key={s.name} className="model-item">
+              <Link href={s.href} className="model-card">
+                <Image className="model-img" src={s.image} alt={s.alt} fill sizes="(max-width: 1355px) 100vw, 1315px" />
                 <div className="model-info">
                   <div className="brand">
-                    <Image src={m.brandLogo} alt="" width={24} height={24} />
-                    {m.brand}
+                    <span className="eyebrow">{s.tag}</span>
                   </div>
-                  <h3 className="model-name">{m.name}</h3>
+                  <h3 className="model-name">{s.name}</h3>
                   <dl className="specs">
-                    {specLabels.map((label, i) => (
+                    {s.specs.map(([label, value]) => (
                       <div key={label}>
                         <dt>{label}</dt>
-                        <dd>{m.specs[i]}</dd>
+                        <dd>{value}</dd>
                       </div>
                     ))}
                   </dl>
@@ -151,33 +139,33 @@ function Featured() {
           ))}
         </div>
         <div className="section-btn right" {...reveal("slide", 0.5)}>
-          <Button href="/models">See All Models</Button>
+          <Button href="/services">See Full Pricing</Button>
         </div>
       </div>
     </section>
   );
 }
 
-function Benefits() {
+function Guarantees() {
   return (
     <section className="section">
       <div className="wrap benefits">
         <div className="head benefits-head" {...reveal("slide", 0.3)}>
-          <Eyebrow>Why Choose Us?</Eyebrow>
-          <h2>Exceptional Service in Every Mile, Every Time</h2>
+          <Eyebrow>Why Auto Spa</Eyebrow>
+          <h2>Fewer Promises, More Proof</h2>
         </div>
-        {benefits.map((b) => (
-          <div key={b.title} className="benefit" {...reveal("grow")}>
+        {GUARANTEES.map((g) => (
+          <div key={g.title} className="benefit" {...reveal("grow")}>
             <div className="light" />
             <div className="benefit-body">
               <div className="ring">
                 <span>
-                  <Image src={b.icon} alt="" width={28} height={28} />
+                  <Icon name={g.icon} />
                 </span>
               </div>
               <div className="stack">
-                <h3>{b.title}</h3>
-                <p>{b.body}</p>
+                <h3>{g.title}</h3>
+                <p>{g.body}</p>
               </div>
             </div>
           </div>
@@ -187,64 +175,26 @@ function Benefits() {
   );
 }
 
-function Testimonials() {
-  // Repeats exist only to fill the parallax/marquee; screen readers hear each quote once.
-  const seen = new Set<string>();
-  return (
-    <section className="section">
-      <div className="wrap">
-        <div className="head head-center" {...reveal("slide", 0.3)}>
-          <Eyebrow>Testimonials</Eyebrow>
-          <h2>Heartfelt Reviews By Rydex Drivers</h2>
-        </div>
-        <div className="tm" {...reveal("fade", 0.4)}>
-          {testimonialColumns.map((column, i) => (
-            <div key={i} className="tm-col">
-              {column.map((p, j) => {
-                const isRepeat = seen.has(p.name);
-                seen.add(p.name);
-                return (
-                <figure key={j} className="card tm-card" aria-hidden={isRepeat}>
-                  <Image src={p.avatar} alt="" width={60} height={60} />
-                  <blockquote>{p.quote}</blockquote>
-                  <hr />
-                  <figcaption>
-                    <span className="tm-name">{p.name}</span>
-                    <span>{p.city}</span>
-                  </figcaption>
-                </figure>
-                );
-              })}
-            </div>
-          ))}
-          <div className="tm-fade start" />
-          <div className="tm-fade end" />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Steps() {
+function Process() {
   return (
     <section className="section">
       <div className="wrap steps-grid">
         <div className="head steps-head" {...reveal("slide", 0.3)}>
-          <Eyebrow>How It Works</Eyebrow>
-          <h2>Follow these simple steps to choose your ideal vehicle and drive away effortlessly.</h2>
-          <Button href="/models">Book Now</Button>
+          <Eyebrow>Our Process</Eyebrow>
+          <h2>Four stages between your car and a flawless finish.</h2>
+          <Button href="/contact">Book an Inspection</Button>
         </div>
         <div className="steps" {...reveal("fade", 0.4)}>
           <div className="timeline" aria-hidden>
             <span className="timeline-fill" />
-            {steps.map((s) => (
+            {PROCESS.map((s) => (
               <span key={s.title} className="dot" />
             ))}
           </div>
           <ol className="step-cards">
-            {steps.map((s) => (
+            {PROCESS.map((s) => (
               <li key={s.title} className="card step">
-                <Image src={s.icon} alt="" width={40} height={40} />
+                <Icon name={s.icon} size={40} />
                 <div className="stack">
                   <h3>{s.title}</h3>
                   <p>{s.body}</p>
@@ -258,27 +208,27 @@ function Steps() {
   );
 }
 
-function Blog() {
+function Specialty() {
   return (
     <section className="section">
       <div className="wrap">
         <div className="head head-center" {...reveal("slide", 0.3)}>
-          <Eyebrow>Blog Posts</Eyebrow>
-          <h2>Engage with Premium Rental Posts</h2>
+          <Eyebrow>Beyond the Car</Eyebrow>
+          <h2>Trucks, Boats and RVs Too</h2>
         </div>
         <div className="blog">
-          {posts.map((p) => (
-            <div key={p.title} className="blog-item" {...reveal("slide", 0.4)}>
-              <Link href={p.href} className="blog-card">
-                <Image src={p.image} alt="" fill sizes="(max-width: 767px) 100vw, (max-width: 991px) 50vw, 600px" />
-                <span className="pill">{p.category}</span>
-                <h3 className="blog-title">{p.title}</h3>
+          {SPECIALTY.map((s) => (
+            <div key={s.title} className="blog-item" {...reveal("slide", 0.4)}>
+              <Link href="/services#specialty" className="blog-card">
+                <Image src={s.image} alt={s.alt} fill sizes="(max-width: 767px) 100vw, (max-width: 991px) 50vw, 600px" />
+                <span className="pill">{s.tag}</span>
+                <h3 className="blog-title">{s.title}</h3>
               </Link>
             </div>
           ))}
         </div>
         <div className="section-btn center" {...reveal("slide", 0.5)}>
-          <Button href="/blog">See All Posts</Button>
+          <Button href="/services#specialty">See Specialty Services</Button>
         </div>
       </div>
     </section>

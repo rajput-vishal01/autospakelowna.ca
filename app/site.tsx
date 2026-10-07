@@ -1,7 +1,10 @@
-import Image, { getImageProps } from "next/image";
+import { ChevronDown, Phone } from "lucide-react";
+import { cacheLife } from "next/cache";
+import { getImageProps } from "next/image";
 import Link from "next/link";
-import { asset, mainPages, modelNames, slug, socials } from "./content";
-import { Button, Flip, reveal, SearchForm } from "./ui";
+import { CONTACT, HOURS, NAV, SERVICES } from "./brand";
+import { ThemeToggle } from "./theme-toggle";
+import { Button, Flip, reveal } from "./ui";
 
 // Art direction: dedicated mobile crop at <=767px. fetchPriority instead of preload so only one source loads.
 export function HeroImage({ desktop, mobile, alt }: { desktop: string; mobile: string; alt: string }) {
@@ -18,11 +21,25 @@ export function HeroImage({ desktop, mobile, alt }: { desktop: string; mobile: s
 
 function Logo() {
   return (
-    <Link href="/" className="logo" aria-label="Rydex home">
+    <Link href="/" className="logo" aria-label="Auto Spa Kelowna home">
       <Flip>
-        <Image src={asset.logo} alt="" width={85} height={24} />
+        <span className="wordmark">
+          <strong>Auto Spa</strong>
+          <span>Kelowna</span>
+        </span>
       </Flip>
     </Link>
+  );
+}
+
+function CallLink({ className }: { className: string }) {
+  return (
+    <a href={CONTACT.tel} className={className}>
+      <Flip>{CONTACT.phone}</Flip>
+      <span className="nav-call-tile">
+        <Phone size={16} strokeWidth={1.75} aria-hidden />
+      </span>
+    </a>
   );
 }
 
@@ -32,35 +49,36 @@ export function Nav() {
       <Logo />
       <div className="nav-right">
         <div className="nav-pill frost">
-          <button className="models-toggle" popoverTarget="models-menu">
-            <Flip>Models</Flip>
-            <Image className="dd-arrow" src={asset.arrowDown} alt="" width={16} height={16} />
+          <button className="models-toggle" popoverTarget="services-menu">
+            <Flip>Services</Flip>
+            <ChevronDown className="dd-arrow" size={16} strokeWidth={1.75} aria-hidden />
           </button>
-          <SearchForm className="search" />
+          <CallLink className="nav-call" />
         </div>
+        <ThemeToggle />
         <button className="menu-btn frost" popoverTarget="site-menu" aria-label="Menu">
           <span />
           <span />
           <span />
         </button>
       </div>
-      <div id="models-menu" popover="auto" className="pop">
-        {modelNames.map((name) => (
-          <Link key={name} href={`/models/${slug(name)}`}>
-            <Flip>{name}</Flip>
+      <div id="services-menu" popover="auto" className="pop">
+        {SERVICES.map((s) => (
+          <Link key={s.name} href={s.href}>
+            <Flip>{s.name}</Flip>
           </Link>
         ))}
       </div>
       <div id="site-menu" popover="auto" className="pop menu-panel">
-        {mainPages.map((p) => (
-          <Link key={p.label} href={p.href} className="menu-link">
+        {NAV.map((p) => (
+          <Link key={p.href} href={p.href} className="menu-link">
             <Flip>{p.label}</Flip>
           </Link>
         ))}
-        <Button href="/models" variant="secondary" className="btn-block">
+        <Button href="/contact" variant="secondary" className="btn-block">
           Book Now
         </Button>
-        <SearchForm className="search search-mobile" />
+        <CallLink className="nav-call nav-call-mobile" />
       </div>
     </nav>
   );
@@ -84,6 +102,13 @@ function FooterLink({ href, children }: { href: string; children: string }) {
   );
 }
 
+// Cached so the prerendered shell can show the current year without a dynamic Date read.
+async function Year() {
+  "use cache";
+  cacheLife("days");
+  return new Date().getFullYear();
+}
+
 export function Footer() {
   return (
     <footer className="footer">
@@ -91,59 +116,51 @@ export function Footer() {
         <div className="footer-top">
           <div className="footer-brand">
             <Logo />
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit suspendisse varius enim in eros.</p>
-            <Button href="/models" variant="secondary">
+            <p>Ceramic coating, paint correction and detailing studio on Evans Court. Serving the Okanagan since day one.</p>
+            <Button href="/contact" variant="secondary">
               Book Now
             </Button>
           </div>
           <div className="footer-links">
             <div className="footer-col">
-              <span>Main Pages</span>
-              {mainPages.map((p) => (
-                <FooterLink key={p.label} href={p.href}>
+              <span>Pages</span>
+              {NAV.map((p) => (
+                <FooterLink key={p.href} href={p.href}>
                   {p.label}
                 </FooterLink>
               ))}
             </div>
             <div className="footer-col">
-              <span>Follow Us</span>
-              {socials.map((s) => (
-                <FooterLink key={s.label} href={s.href}>
-                  {s.label}
-                </FooterLink>
+              <span>Hours</span>
+              {HOURS.map((h) => (
+                <p key={h.day} className="footer-hours">
+                  {h.day}
+                  <small>{h.time}</small>
+                </p>
               ))}
             </div>
             <div className="footer-col">
               <span>Visit Us</span>
-              <address>19 Jumeirah Beach Road, Umm Suqeim, UAE.</address>
+              <address>{CONTACT.address}</address>
+              <FooterLink href={CONTACT.maps}>Get Directions</FooterLink>
             </div>
             <div className="footer-col">
-              <span>Contact us</span>
-              <a href="tel:+11234567890">
-                <Flip>+1 (123) 456-7890</Flip>
+              <span>Contact</span>
+              <a href={CONTACT.tel}>
+                <Flip>{CONTACT.phone}</Flip>
               </a>
-              <a href="mailto:info@rydex.com">
-                <Flip>info@rydex.com</Flip>
+              <a href={`mailto:${CONTACT.email}`}>
+                <Flip>Email Us</Flip>
               </a>
+              <FooterLink href={CONTACT.instagram}>Instagram</FooterLink>
             </div>
           </div>
         </div>
         <div className="footer-bottom">
           <p>
-            Powered by{" "}
-            <a href="https://webflow.com" target="_blank" rel="noopener noreferrer">
-              Webflow
-            </a>{" "}
-            Designed by{" "}
-            <a href="https://webflow.com/templates/designers/am-templates" target="_blank" rel="noopener noreferrer">
-              AM Templates
-            </a>
+            © <Year /> Auto Spa Kelowna. All rights reserved.
           </p>
-          <div className="footer-legal">
-            <FooterLink href="/style-guide">Style Guide</FooterLink>
-            <FooterLink href="/licenses">Licenses</FooterLink>
-            <FooterLink href="/changelog">Changelog</FooterLink>
-          </div>
+          <p>Serving {CONTACT.areas.join(", ")}.</p>
         </div>
       </div>
     </footer>
