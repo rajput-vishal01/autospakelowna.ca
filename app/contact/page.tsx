@@ -1,9 +1,9 @@
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Camera, Mail, MapPin, Phone } from "lucide-react";
 import type { Metadata } from "next";
-import { CONTACT, HOURS } from "../brand";
+import { HoursList, PageHeader } from "../blocks";
+import { CONTACT, MAP_EMBED } from "../brand";
 import { Effects } from "../effects";
-import { InternalNav } from "../site";
-import { Eyebrow, reveal } from "../ui";
+import { Flip, reveal } from "../ui";
 import { Booking } from "./booking";
 
 export const metadata: Metadata = {
@@ -14,53 +14,50 @@ export const metadata: Metadata = {
 };
 
 const METHODS = [
-  { label: CONTACT.phone, note: "Call or text, Monday to Saturday", href: CONTACT.tel, Icon: Phone },
-  { label: "Email Us", note: CONTACT.email, href: `mailto:${CONTACT.email}`, Icon: Mail },
-  { label: "Get Directions", note: CONTACT.address, href: CONTACT.maps, Icon: MapPin },
+  { label: "Call or text", value: CONTACT.phone, href: CONTACT.tel, Icon: Phone },
+  { label: "Email", value: CONTACT.email, href: `mailto:${CONTACT.email}`, Icon: Mail },
+  { label: "Visit", value: CONTACT.address, href: CONTACT.maps, Icon: MapPin },
+  { label: "Instagram", value: "@auto_spa_kelowna", href: CONTACT.instagram, Icon: Camera },
 ];
 
 export default function ContactPage() {
   return (
     <>
-      <InternalNav />
-      <main className="section">
-        <div className="wrap">
-          <div className="head head-center contact-head" {...reveal("slide", 0.4)}>
-            <Eyebrow>Book and Contact</Eyebrow>
-            <h1>Book Your Detail</h1>
-            <p>Pick a service and a time. We confirm by phone or email within business hours, with a fixed quote after inspection.</p>
-          </div>
-          <div className="contact">
-            <div {...reveal("slide", 0.5)}>
+      <main>
+        <PageHeader
+          eyebrow="Book and Contact"
+          title="Book Your Detail"
+          intro="Pick a service and a time and we confirm by phone or email within business hours. Prefer to talk? Call us."
+        />
+        <section className="section">
+          <div className="wrap contact-layout">
+            <div className="contact-booking" {...reveal("slide", 0.3)}>
               <Booking />
             </div>
-            <div className="contact-methods">
-              {METHODS.map((m, i) => (
-                <a
-                  key={m.label}
-                  href={m.href}
-                  className="card method"
-                  {...(m.href.startsWith("http") && { target: "_blank", rel: "noopener noreferrer" })}
-                  {...reveal("fade", 0.6 + i * 0.1)}
-                >
-                  <m.Icon className="line-icon" size={28} strokeWidth={1.5} aria-hidden />
-                  <span className="method-info">
-                    <span className="medium">{m.label}</span>
-                    <span className="method-note">{m.note}</span>
-                  </span>
-                </a>
-              ))}
-            </div>
-            <ul className="card hours" {...reveal("fade", 0.6)}>
-              {HOURS.map((h) => (
-                <li key={h.day}>
-                  <span>{h.day}</span>
-                  <span className="price">{h.time}</span>
-                </li>
-              ))}
-            </ul>
+            <aside className="contact-aside" {...reveal("slide", 0.4)}>
+              <ul className="card contact-list">
+                {METHODS.map(({ label, value, href, Icon }) => (
+                  <li key={label}>
+                    <a href={href} {...(href.startsWith("http") && { target: "_blank", rel: "noopener noreferrer" })}>
+                      <Icon className="line-icon" size={22} strokeWidth={1.5} aria-hidden />
+                      <span>
+                        <small>{label}</small>
+                        <Flip>{value}</Flip>
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <div className="card contact-hours">
+                <span className="eyebrow">Opening Hours</span>
+                <HoursList />
+              </div>
+              <div className="map-frame contact-map">
+                <iframe src={MAP_EMBED} title="Map to Auto Spa Kelowna, 715 Evans Ct" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+              </div>
+            </aside>
           </div>
-        </div>
+        </section>
       </main>
       <Effects />
     </>

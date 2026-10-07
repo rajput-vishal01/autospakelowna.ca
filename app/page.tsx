@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { GUARANTEES, type Metric, METRICS, PHOTO, PROCESS, SERVICES, SPECIALTY } from "./brand";
+import { CtaBand, FaqList, FindUs, TrustStrip } from "./blocks";
+import { GUARANTEES, HOME_FAQ, type Metric, METRICS, PHOTO, PROCESS, SERVICES, SPECIALTY } from "./brand";
 import { Effects } from "./effects";
+import { Estimator } from "./estimator";
 import { ReviewsSection } from "./reviews-section";
-import { HeroImage, Nav } from "./site";
+import { HeroImage } from "./site";
 import { Arrows, Button, Eyebrow, Flip, Icon, Odometer, reveal } from "./ui";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
@@ -14,12 +16,17 @@ export default function Home() {
     <>
       <Hero />
       <main>
+        <TrustStrip />
         <Studio />
         <Services />
+        <EstimateSection />
         <Guarantees />
         <ReviewsSection />
         <Process />
         <Specialty />
+        <Faq />
+        <FindUs />
+        <CtaBand />
       </main>
       <Effects />
     </>
@@ -32,9 +39,8 @@ function Hero() {
       <div className="wrap-lg">
         <div className="hero">
           <div className="hero-media">
-            <HeroImage desktop={PHOTO.heroDesktop} mobile={PHOTO.heroMobile} alt="Black sports car being pressure washed" />
+            <HeroImage desktop={PHOTO.heroDesktop} mobile={PHOTO.heroMobile} alt="Black car with headlights on in a dark garage" />
           </div>
-          <Nav />
           <div className="hero-texts">
             <div className="hero-top">
               <div className="hero-loc">
@@ -233,6 +239,39 @@ function Specialty() {
         <div className="section-btn center" {...reveal("slide", 0.5)}>
           <Button href="/services#specialty">See Specialty Services</Button>
         </div>
+      </div>
+    </section>
+  );
+}
+
+function EstimateSection() {
+  return (
+    <section className="section">
+      <div className="wrap">
+        <div className="head-row" {...reveal("slide", 0.3)}>
+          <div className="head">
+            <Eyebrow>Coating Estimator</Eyebrow>
+            <h2>Price Your Protection</h2>
+          </div>
+          <p>Pick a coating term and how your paint looks today. The number uses our published prices.</p>
+        </div>
+        <div {...reveal("fade", 0.4)}>
+          <Estimator />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Faq() {
+  return (
+    <section className="section">
+      <div className="wrap">
+        <div className="head head-center" {...reveal("slide", 0.3)}>
+          <Eyebrow>Good to Know</Eyebrow>
+          <h2>Common Questions</h2>
+        </div>
+        <FaqList items={HOME_FAQ} />
       </div>
     </section>
   );

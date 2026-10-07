@@ -1,8 +1,9 @@
-import { ChevronDown, Phone } from "lucide-react";
+import { Phone } from "lucide-react";
 import { cacheLife } from "next/cache";
 import { getImageProps } from "next/image";
 import Link from "next/link";
-import { CONTACT, HOURS, NAV, SERVICES } from "./brand";
+import { CONTACT, HOURS, NAV } from "./brand";
+import { NavLinks } from "./nav-links";
 import { ThemeToggle } from "./theme-toggle";
 import { Button, Flip, reveal } from "./ui";
 
@@ -32,63 +33,49 @@ function Logo() {
   );
 }
 
-function CallLink({ className }: { className: string }) {
-  return (
-    <a href={CONTACT.tel} className={className}>
-      <Flip>{CONTACT.phone}</Flip>
-      <span className="nav-call-tile">
-        <Phone size={16} strokeWidth={1.75} aria-hidden />
-      </span>
-    </a>
-  );
-}
+const MENU_ID = "mobile-menu";
 
-export function Nav() {
+// One sticky header for every page: plain visible links, the phone number and a Book button. No hidden menus on desktop.
+export function Header() {
   return (
-    <nav className="nav" aria-label="Main">
-      <Logo />
-      <div className="nav-right">
-        <div className="nav-pill frost">
-          <button className="models-toggle" popoverTarget="services-menu">
-            <Flip>Services</Flip>
-            <ChevronDown className="dd-arrow" size={16} strokeWidth={1.75} aria-hidden />
+    <header className="site-header">
+      <div className="wrap header-inner">
+        <Logo />
+        <nav className="header-nav" aria-label="Main">
+          <NavLinks className="header-link" />
+        </nav>
+        <div className="header-actions">
+          <a href={CONTACT.tel} className="header-call">
+            <Phone size={18} strokeWidth={1.75} aria-hidden />
+            <span>{CONTACT.phone}</span>
+          </a>
+          <ThemeToggle />
+          <Link href="/contact" className="header-book">
+            Book Now
+          </Link>
+          <button className="menu-btn" popoverTarget={MENU_ID} aria-label="Open menu">
+            <span />
+            <span />
+            <span />
           </button>
-          <CallLink className="nav-call" />
         </div>
-        <ThemeToggle />
-        <button className="menu-btn frost" popoverTarget="site-menu" aria-label="Menu">
-          <span />
-          <span />
-          <span />
-        </button>
       </div>
-      <div id="services-menu" popover="auto" className="pop">
-        {SERVICES.map((s) => (
-          <Link key={s.name} href={s.href}>
-            <Flip>{s.name}</Flip>
-          </Link>
-        ))}
+      <div id={MENU_ID} popover="auto" className="mobile-menu">
+        <nav aria-label="Mobile">
+          <NavLinks className="mobile-link" closesMenu={MENU_ID} />
+        </nav>
+        <div className="mobile-actions">
+          <Button href="/contact" className="btn-block">
+            Book Now
+          </Button>
+          <a href={CONTACT.tel} className="btn btn-secondary btn-block">
+            <Flip>{`Call ${CONTACT.phone}`}</Flip>
+            <span className="btn-tile">
+              <Phone size={18} strokeWidth={1.75} aria-hidden />
+            </span>
+          </a>
+        </div>
       </div>
-      <div id="site-menu" popover="auto" className="pop menu-panel">
-        {NAV.map((p) => (
-          <Link key={p.href} href={p.href} className="menu-link">
-            <Flip>{p.label}</Flip>
-          </Link>
-        ))}
-        <Button href="/contact" variant="secondary" className="btn-block">
-          Book Now
-        </Button>
-        <CallLink className="nav-call nav-call-mobile" />
-      </div>
-    </nav>
-  );
-}
-
-// Internal pages: nav sits above the hero instead of inside it.
-export function InternalNav() {
-  return (
-    <header className="wrap internal-nav">
-      <Nav />
     </header>
   );
 }

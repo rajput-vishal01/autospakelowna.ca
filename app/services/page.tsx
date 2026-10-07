@@ -1,10 +1,11 @@
 import { Check } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
-import { ADDONS, COATINGS, CORRECTION, PACKAGES, PHOTO, SPECIALTY, VEHICLE_CLASSES } from "../brand";
+import { CtaBand, PageHeader } from "../blocks";
+import { ADDONS, COATINGS, CORRECTION, SPECIALTY } from "../brand";
 import { Effects } from "../effects";
-import { HeroImage, InternalNav } from "../site";
-import { Button, Eyebrow, Icon, reveal } from "../ui";
+import { Eyebrow, reveal } from "../ui";
+import { PackagePricing } from "./package-pricing";
 
 export const metadata: Metadata = {
   title: "Detailing, Ceramic Coating and Paint Correction Prices",
@@ -13,111 +14,62 @@ export const metadata: Metadata = {
   alternates: { canonical: "/services" },
 };
 
+const SECTIONS = [
+  ["Detailing", "#detailing"],
+  ["Ceramic Coating", "#coating"],
+  ["Paint Correction", "#correction"],
+  ["Add-Ons", "#addons"],
+  ["Trucks, Boats, RVs", "#specialty"],
+];
+
 export default function ServicesPage() {
   return (
     <>
-      <InternalNav />
       <main>
-        <PageHero />
+        <PageHeader
+          eyebrow="Services and Pricing"
+          title="Every Service, One Fixed Price"
+          intro="Detailing is priced by vehicle size. Coatings and correction are confirmed with a fixed quote after we inspect your paint."
+        >
+          <nav className="jump-links" aria-label="On this page">
+            {SECTIONS.map(([label, href]) => (
+              <a key={href} href={href} className="area-pill">
+                {label}
+              </a>
+            ))}
+          </nav>
+        </PageHeader>
         <Detailing />
         <Coating />
         <Correction />
         <AddOns />
         <Specialty />
-        <Closing />
+        <CtaBand title="Not sure which service fits? We will tell you." />
       </main>
       <Effects />
     </>
   );
 }
 
-function PageHero() {
+function SectionHead({ eyebrow, title, intro }: { eyebrow: string; title: string; intro: string }) {
   return (
-    <section className="hero-section">
-      <div className="wrap-lg">
-        <div className="hero about-hero">
-          <div className="hero-media">
-            <HeroImage desktop={PHOTO.hypercar} mobile={PHOTO.hypercarMobile} alt="White hypercar photographed at night" />
-          </div>
-          <div className="wrap">
-            <div className="head" {...reveal("slide", 0.4)}>
-              <Eyebrow>Services and Pricing</Eyebrow>
-              <h1>Every Service, One Fixed Price</h1>
-            </div>
-          </div>
-        </div>
+    <div className="head-row" {...reveal("slide", 0.3)}>
+      <div className="head">
+        <Eyebrow>{eyebrow}</Eyebrow>
+        <h2>{title}</h2>
       </div>
-    </section>
-  );
-}
-
-function Checklist({ items }: { items: string[] }) {
-  return (
-    <ul className="checklist">
-      {items.map((item) => (
-        <li key={item}>
-          <Check size={18} strokeWidth={1.75} aria-hidden />
-          {item}
-        </li>
-      ))}
-    </ul>
+      <p>{intro}</p>
+    </div>
   );
 }
 
 function Detailing() {
   return (
-    <section className="section" id="detailing">
+    <section className="section anchor" id="detailing">
       <div className="wrap">
-        <div className="head-row" {...reveal("slide", 0.3)}>
-          <div className="head">
-            <Eyebrow>Auto Detailing</Eyebrow>
-            <h2>Three Packages, Priced by Size</h2>
-          </div>
-          <p>Each package is priced for an SUV or sedan, a truck, or a 3-row vehicle. Add-ons are listed below.</p>
-        </div>
-        <div className="models" {...reveal("fade", 0.4)}>
-          {PACKAGES.map((p) => (
-            <div key={p.name} className="model-item">
-              <article className="model-card">
-                <Image className="model-img" src={p.image} alt={p.alt} fill sizes="(max-width: 1355px) 100vw, 1315px" />
-                <div className="model-info">
-                  <div className="brand">
-                    <span className="eyebrow">{p.popular ? `${p.kind} · Most Booked` : p.kind}</span>
-                  </div>
-                  <h3 className="model-name">{p.name}</h3>
-                  <dl className="specs">
-                    {VEHICLE_CLASSES.map((label, i) => (
-                      <div key={label}>
-                        <dt>{label}</dt>
-                        <dd>{p.prices[i]}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
-              </article>
-            </div>
-          ))}
-        </div>
-        <div className="packages">
-          {PACKAGES.map((p, i) => (
-            <div key={p.name} className="card package" {...reveal("slide", 0.4 + i * 0.1)}>
-              <div className="stack">
-                <h3>{p.name}</h3>
-                <p>{p.blurb}</p>
-                {/* Prices repeat here because the deck hides its spec row on phones. */}
-                <p className="price">From {p.prices[0]}</p>
-                <p>{VEHICLE_CLASSES.map((c, i) => `${c} ${p.prices[i]}`).join(" · ")}</p>
-              </div>
-              <div className="stack">
-                <span className="eyebrow">Interior</span>
-                <Checklist items={p.interior} />
-              </div>
-              <div className="stack">
-                <span className="eyebrow">Exterior</span>
-                <Checklist items={p.exterior} />
-              </div>
-            </div>
-          ))}
+        <SectionHead eyebrow="Auto Detailing" title="Three Packages, Priced by Size" intro="Choose your vehicle size to see the price. Every package covers interior and exterior." />
+        <div {...reveal("fade", 0.4)}>
+          <PackagePricing />
         </div>
       </div>
     </section>
@@ -126,31 +78,29 @@ function Detailing() {
 
 function Coating() {
   return (
-    <section className="section" id="coating">
-      <div className="wrap benefits">
-        <div className="head benefits-head" {...reveal("slide", 0.3)}>
-          <Eyebrow>Ceramic Coating</Eyebrow>
-          <h2>9H+ Protection, Warrantied in Writing</h2>
-          <p>Sedan and coupe pricing with a 1-step polish included. Larger vehicles are quoted at inspection.</p>
-        </div>
-        {COATINGS.map((c) => (
-          <div key={c.name} className="benefit" {...reveal("grow")}>
-            <div className="light" />
-            <div className="benefit-body">
-              <div className="ring">
-                <span>
-                  <Icon name="shield" />
-                </span>
-              </div>
-              <div className="stack">
-                <span className="eyebrow">{c.popular ? `${c.years} · Most Booked` : c.years}</span>
+    <section className="section anchor band-surface" id="coating">
+      <div className="wrap">
+        <SectionHead eyebrow="Ceramic Coating" title="9H+ Protection, Warrantied in Writing" intro="Sedan and coupe prices with a 1-step polish included. Larger vehicles are quoted at inspection." />
+        <div className="tiers">
+          {COATINGS.map((c, i) => {
+            const years = Number.parseInt(c.years, 10);
+            return (
+              <article key={c.name} className={`card tier${c.popular ? " is-popular" : ""}`} {...reveal("slide", 0.3 + i * 0.1)}>
+                {c.popular && <span className="pill price-badge">Most Booked</span>}
+                <p className="tier-years">
+                  {years}
+                  <small>years</small>
+                </p>
+                <div className="tier-bar" aria-hidden>
+                  <span style={{ width: `${years * 10}%` }} />
+                </div>
                 <h3>{c.name}</h3>
                 <p>{c.note}</p>
-                <p className="price">{c.price}</p>
-              </div>
-            </div>
-          </div>
-        ))}
+                <p className="price-big">{c.price}</p>
+              </article>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
@@ -158,33 +108,23 @@ function Coating() {
 
 function Correction() {
   return (
-    <section className="section" id="correction">
-      <div className="wrap steps-grid">
-        <div className="head steps-head" {...reveal("slide", 0.3)}>
-          <Eyebrow>Paint Correction</Eyebrow>
-          <h2>Matched to your paint, never cut past it.</h2>
-          <p>Depth readings come first, so every stage stays inside what your clear coat can safely give.</p>
-          <Button href="/contact">Book an Inspection</Button>
-        </div>
-        <div className="steps" {...reveal("fade", 0.4)}>
-          <div className="timeline" aria-hidden>
-            <span className="timeline-fill" />
-            {CORRECTION.map((s) => (
-              <span key={s.title} className="dot" />
-            ))}
-          </div>
-          <ol className="step-cards">
-            {CORRECTION.map((s) => (
-              <li key={s.title} className="card step">
-                <Icon name="sparkles" size={40} />
-                <div className="stack">
-                  <h3>{s.title}</h3>
-                  <p>{s.body}</p>
-                  <p className="price">{s.price}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
+    <section className="section anchor" id="correction">
+      <div className="wrap">
+        <SectionHead eyebrow="Paint Correction" title="Matched to Your Paint, Never Cut Past It" intro="Depth readings come first, so every stage stays inside what your clear coat can safely give." />
+        <div className="stages">
+          {CORRECTION.map((s, i) => (
+            <article key={s.title} className="card stage" {...reveal("slide", 0.3 + i * 0.1)}>
+              <div className="stage-meter" aria-label={`Defect level ${i + 1} of 3`} role="img">
+                {[0, 1, 2].map((bar) => (
+                  <span key={bar} className={bar <= i ? "is-on" : undefined} />
+                ))}
+              </div>
+              <span className="stage-number">0{i + 1}</span>
+              <h3>{s.title}</h3>
+              <p>{s.body}</p>
+              <p className="price">{s.price}</p>
+            </article>
+          ))}
         </div>
       </div>
     </section>
@@ -193,17 +133,19 @@ function Correction() {
 
 function AddOns() {
   return (
-    <section className="section">
-      <div className="wrap">
-        <div className="head head-center" {...reveal("slide", 0.3)}>
+    <section className="section anchor band-surface" id="addons">
+      <div className="wrap addons-layout">
+        <div className="head" {...reveal("slide", 0.3)}>
           <Eyebrow>Add-Ons</Eyebrow>
           <h2>Tailor Any Detail</h2>
+          <p>Add any of these to a package. Ranges depend on the vehicle and how much work it needs.</p>
         </div>
-        <ul className="addons" {...reveal("fade", 0.4)}>
+        <ul className="price-menu" {...reveal("fade", 0.4)}>
           {ADDONS.map(([name, price]) => (
-            <li key={name} className="card addon">
+            <li key={name}>
               <span>{name}</span>
-              <span className="price">{price}</span>
+              <span className="price-menu-dots" aria-hidden />
+              <strong>{price}</strong>
             </li>
           ))}
         </ul>
@@ -214,38 +156,29 @@ function AddOns() {
 
 function Specialty() {
   return (
-    <section className="section" id="specialty">
+    <section className="section anchor" id="specialty">
       <div className="wrap">
-        <div className="head head-center" {...reveal("slide", 0.3)}>
-          <Eyebrow>Specialty</Eyebrow>
-          <h2>Trucks, Boats and RVs</h2>
-        </div>
-        <div className="blog">
+        <SectionHead eyebrow="Specialty" title="Trucks, Boats and RVs" intro="The same inspection-first process, scaled up for bigger surfaces and harsher conditions." />
+        <div className="rows">
           {SPECIALTY.map((s) => (
-            <div key={s.title} className="blog-item" {...reveal("slide", 0.4)}>
-              <div className="blog-card">
-                <Image src={s.image} alt={s.alt} fill sizes="(max-width: 767px) 100vw, (max-width: 991px) 50vw, 600px" />
-                <span className="pill">{s.tag}</span>
-                <h3 className="blog-title">{s.title}</h3>
+            <article key={s.title} className="row">
+              <div className="row-image about-image" {...reveal("image", 0.2)}>
+                <Image src={s.image} alt={s.alt} fill sizes="(max-width: 767px) 100vw, 50vw" />
               </div>
-              <div className="card specialty-points">
-                <Checklist items={s.points} />
+              <div className="row-text" {...reveal("slide", 0.3)}>
+                <span className="pill row-pill">{s.tag}</span>
+                <h3 className="row-title">{s.title}</h3>
+                <ul className="checklist">
+                  {s.points.map((point) => (
+                    <li key={point}>
+                      <Check size={18} strokeWidth={1.75} aria-hidden />
+                      {point}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
+            </article>
           ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Closing() {
-  return (
-    <section className="section">
-      <div className="wrap">
-        <div className="about-cta" {...reveal("slide", 0.3)}>
-          <p>Not sure which service fits? Book an inspection and we will recommend one, with a fixed quote before any work starts.</p>
-          <Button href="/contact">Book an Inspection</Button>
         </div>
       </div>
     </section>

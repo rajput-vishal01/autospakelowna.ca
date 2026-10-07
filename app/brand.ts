@@ -32,8 +32,13 @@ const unsplash = (id: string, w = 1600, h?: number) =>
   `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}${h ? `&h=${h}` : ""}&q=80`;
 
 export const PHOTO = {
-  heroDesktop: unsplash("1520340356584-f9917d1eea6f", 2000),
-  heroMobile: unsplash("1520340356584-f9917d1eea6f", 800, 1400),
+  // Dark garage shot: white hero text needs a dark photo behind it.
+  heroDesktop: unsplash("1626621394541-b9a48e35a95d", 2000),
+  heroMobile: unsplash("1626621394541-b9a48e35a95d", 800, 1400),
+  pressureWash: unsplash("1520340356584-f9917d1eea6f"),
+  silhouette: unsplash("1645400379459-f6fd3d963fd4"),
+  microfibre: unsplash("1761934657948-708146148588"),
+  sprayDetail: unsplash("1652987086612-d948b775d358"),
   handWash: unsplash("1607860108855-64acf2078ed9"),
   handWashMobile: unsplash("1607860108855-64acf2078ed9", 800, 1400),
   blueMuscle: unsplash("1552519507-da3b142c6e3d"),
@@ -104,8 +109,8 @@ export const SERVICES = [
     name: "Ceramic Coating",
     href: "/services#coating",
     tag: "Protection",
-    image: PHOTO.blueMuscle,
-    alt: "Blue muscle car parked in the desert",
+    image: PHOTO.silhouette,
+    alt: "Glossy sports car silhouette in a dark studio",
     specs: [
       ["Starting at", "$999"],
       ["Warranty", "3 to 10 yr"],
@@ -117,8 +122,8 @@ export const SERVICES = [
     name: "Paint Correction",
     href: "/services#correction",
     tag: "Restoration",
-    image: PHOTO.blackPorsche,
-    alt: "Black Porsche on an open road at dusk",
+    image: PHOTO.microfibre,
+    alt: "Microfibre towel resting on a polished black hood",
     specs: [
       ["Starting at", "$499"],
       ["Stages", "1 to 3"],
@@ -130,8 +135,8 @@ export const SERVICES = [
     name: "Auto Detailing",
     href: "/services#detailing",
     tag: "Interior + Exterior",
-    image: PHOTO.handWash,
-    alt: "Detailer hand washing a black car covered in foam",
+    image: PHOTO.sprayDetail,
+    alt: "Detailer spraying and wiping an orange sports car",
     specs: [
       ["Starting at", "$280"],
       ["Packages", "3"],
@@ -297,3 +302,21 @@ export function slotMinutes(slot: string): number {
   const [, h, m, period] = slot.match(/^(\d{1,2}):(\d{2}) (AM|PM)$/) ?? [];
   return ((Number(h) % 12) + (period === "PM" ? 12 : 0)) * 60 + Number(m);
 }
+
+// Keyless Google Maps embed of the shop address.
+export const MAP_EMBED = "https://www.google.com/maps?q=715+Evans+Ct,+Kelowna,+BC+V1X+6G4&output=embed";
+
+export const HOME_FAQ = [
+  { q: "How long does a ceramic coating take?", a: "One to three days, depending on how much correction the paint needs. We book the car in for the full window so the coating cures properly instead of being rushed." },
+  { q: "Do I need an inspection before I get a price?", a: "For coatings and correction, yes. We look at the paint under correction lighting, take depth readings, then give you a fixed quote. Detailing packages are priced up front by vehicle size." },
+  { q: "Is a coated car maintenance-free?", a: "No coating is maintenance-free, but it is maintenance-easy. Dirt and water release faster, washes take less effort, and the gloss lasts for the life of the warranty." },
+  { q: "Do you offer mobile detailing?", a: "Maintenance washes and interiors can be done on site in Kelowna and West Kelowna. Coatings and correction stay in the shop, where lighting and temperature are controlled." },
+  { q: "Which areas do you serve?", a: "Kelowna, West Kelowna, Lake Country, Peachland and Vernon. Most clients drop their vehicle at our Evans Court studio." },
+];
+
+/* Estimator uses only published prices: coating tier (1-step polish included) + correction add-on. */
+export const PAINT_CONDITION = [
+  { label: "Light swirls", stage: "1-Step polish", add: 0 },
+  { label: "Deeper scratches", stage: "2-Step correction", add: 250 },
+  { label: "Heavy defects", stage: "3-Step correction", add: 500 },
+];

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Effects } from "./effects";
-import { InternalNav } from "./site";
 import { Button, Eyebrow } from "./ui";
 
 export const metadata: Metadata = { title: "Page Not Found" };
@@ -9,7 +8,6 @@ export const metadata: Metadata = { title: "Page Not Found" };
 export default function NotFound() {
   return (
     <>
-      <InternalNav />
       <main className="section">
         <div className="wrap">
           <div className="head head-center">

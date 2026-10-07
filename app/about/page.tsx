@@ -1,11 +1,9 @@
-import { MapPin } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
-import { CONTACT, HOURS, METRICS, PHOTO, PRODUCT_BRANDS } from "../brand";
+import { CtaBand, FindUs, PageHeader } from "../blocks";
+import { GUARANTEES, METRICS, PHOTO, PRODUCT_BRANDS } from "../brand";
 import { Effects } from "../effects";
-import { HeroImage, InternalNav } from "../site";
-import { Button, Eyebrow, Odometer, reveal } from "../ui";
+import { Eyebrow, Odometer, reveal } from "../ui";
 
 export const metadata: Metadata = {
   title: "About the Studio",
@@ -14,68 +12,109 @@ export const metadata: Metadata = {
   alternates: { canonical: "/about" },
 };
 
+const MOSAIC = [
+  { src: PHOTO.sprayDetail, alt: "Detailer spraying and wiping an orange sports car" },
+  { src: PHOTO.microfibre, alt: "Microfibre towel resting on a polished black hood" },
+  { src: PHOTO.pressureWash, alt: "Black sports car being pressure washed" },
+];
+
 export default function AboutPage() {
   return (
     <>
-      <InternalNav />
       <main>
-        <PageHero />
-        <WhoWeAre />
-        <Brands />
+        <PageHeader
+          eyebrow="About Us"
+          title="A Small Studio With Exacting Standards"
+          intro="Everyone in the valley promises a showroom finish. We measure it, quote it, and put the warranty in writing."
+        />
+        <Mosaic />
+        <Story />
+        <Values />
         <Numbers />
-        <Visit />
+        <Brands />
+        <FindUs eyebrow="Visit Us" title="715 Evans Court, Kelowna" />
+        <CtaBand />
       </main>
       <Effects />
     </>
   );
 }
 
-function PageHero() {
+function Mosaic() {
   return (
-    <section className="hero-section">
-      <div className="wrap-lg">
-        <div className="hero about-hero">
-          <div className="hero-media">
-            <HeroImage desktop={PHOTO.handWash} mobile={PHOTO.handWashMobile} alt="Detailer hand washing a black car covered in foam" />
+    <section className="section mosaic-section">
+      <div className="wrap mosaic">
+        {MOSAIC.map((m, i) => (
+          <div key={m.src} className="mosaic-item about-image" {...reveal("image", 0.2 + i * 0.1)}>
+            <Image src={m.src} alt={m.alt} fill sizes={i === 0 ? "(max-width: 767px) 100vw, 60vw" : "(max-width: 767px) 100vw, 40vw"} />
           </div>
-          <div className="wrap">
-            <div className="head" {...reveal("slide", 0.4)}>
-              <Eyebrow>About Us</Eyebrow>
-              <h1>A Small Studio With Exacting Standards</h1>
-            </div>
-          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function Story() {
+  return (
+    <section className="section">
+      <div className="wrap story">
+        <div className="head" {...reveal("slide", 0.3)}>
+          <Eyebrow>Who We Are</Eyebrow>
+          <h2>Built on measurement, not marketing.</h2>
+        </div>
+        <div className="story-text" {...reveal("slide", 0.4)}>
+          <p>
+            Auto Spa Kelowna is a ceramic coating, paint correction and detailing studio, not a car wash. One vehicle
+            sits in the bay at a time, under correction lighting, in a climate-controlled space.
+          </p>
+          <p>
+            Before any polish touches your paint we take depth readings, so we know exactly how much clear coat there is
+            to work with. Then we quote a fixed price and register your coating warranty in your name.
+          </p>
         </div>
       </div>
     </section>
   );
 }
 
-function RevealImage({ src, alt, delay }: { src: string; alt: string; delay: number }) {
+function Values() {
   return (
-    <div className="about-image" {...reveal("image", delay)}>
-      <Image src={src} alt={alt} fill sizes="(max-width: 767px) 100vw, 50vw" />
-    </div>
+    <section className="section band-surface">
+      <div className="wrap">
+        <div className="head head-center" {...reveal("slide", 0.3)}>
+          <Eyebrow>What We Promise</Eyebrow>
+          <h2>Four Things You Can Hold Us To</h2>
+        </div>
+        <ol className="values">
+          {GUARANTEES.map((g, i) => (
+            <li key={g.title} className="value" {...reveal("slide", 0.3 + i * 0.08)}>
+              <span className="value-number">0{i + 1}</span>
+              <h3>{g.title}</h3>
+              <p>{g.body}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
   );
 }
 
-function WhoWeAre() {
+function Numbers() {
   return (
     <section className="section">
-      <div className="wrap about-split">
-        <RevealImage src={PHOTO.lakeside} alt="Grey luxury sedan parked by a lake" delay={0.3} />
-        <div className="about-texts" {...reveal("slide", 0.4)}>
+      <div className="wrap">
+        <div className="numbers-band cta-band" {...reveal("grow")}>
           <div className="head">
-            <Eyebrow>Who We Are</Eyebrow>
-            <h2>Built on measurement, not marketing.</h2>
+            <Eyebrow>Our Numbers</Eyebrow>
+            <h2>The Proof Behind the Promise</h2>
           </div>
-          <div className="stack">
-            <p>
-              Everyone in the valley promises a showroom finish. We measure it. Paint depth readings before polishing,
-              one vehicle in the bay at a time, and a coating warranty registered in your name.
-            </p>
-            <Button href="/contact" className="btn-block">
-              Book Now
-            </Button>
+          <div className="numbers-grid">
+            {METRICS.map((m) => (
+              <div key={m.label} className="metric" {...reveal("slide", 0.4)}>
+                <Odometer parts={m.parts} symbol={m.symbol} value={m.value} />
+                <p>{m.label}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -85,85 +124,18 @@ function WhoWeAre() {
 
 function Brands() {
   return (
-    <section aria-label="Products we use and sell">
-      <div className="wrap">
-        <div className="marquee" {...reveal("fade", 0.3)}>
-          {[false, true].map((isCopy) => (
-            <div key={String(isCopy)} className="marquee-row" aria-hidden={isCopy}>
-              {PRODUCT_BRANDS.map((name) => (
-                <span key={name} className="marquee-item">
-                  {name}
-                </span>
-              ))}
-            </div>
+    <section className="section">
+      <div className="wrap brands-layout">
+        <div className="head" {...reveal("slide", 0.3)}>
+          <Eyebrow>Products</Eyebrow>
+          <h2>What We Use and Sell</h2>
+          <p>Professional-grade compounds, coatings and tools. Ask in the shop about maintenance products for your coating.</p>
+        </div>
+        <ul className="brand-grid" {...reveal("fade", 0.4)}>
+          {PRODUCT_BRANDS.map((name) => (
+            <li key={name}>{name}</li>
           ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Numbers() {
-  // Checkerboard of metric cards and empty filler cards (fillers drop below 992px).
-  const [first, ...rest] = METRICS;
-  const cards = [first, null, null, ...rest];
-  return (
-    <section className="section">
-      <div className="wrap">
-        <div className="head numbers-head" {...reveal("slide", 0.3)}>
-          <Eyebrow>Our Numbers</Eyebrow>
-          <h2>The Proof Behind the Promise</h2>
-        </div>
-        <div className="about-split">
-          <div className="about-metrics">
-            {cards.map((m, i) =>
-              m ? (
-                <div key={m.label} className="card metric-card metric" {...reveal("grow")}>
-                  <Odometer parts={m.parts} symbol={m.symbol} value={m.value} />
-                  <p className="metric-title">{m.label}</p>
-                </div>
-              ) : (
-                <div key={i} className="card metric-card filler" aria-hidden {...reveal("grow")} />
-              ),
-            )}
-          </div>
-          <RevealImage src={PHOTO.blueMuscle} alt="Blue muscle car parked in the desert" delay={0.4} />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Visit() {
-  return (
-    <section className="section">
-      <div className="wrap">
-        <div className="showroom">
-          <div className="showroom-bg" {...reveal("zoom")}>
-            <Image src={PHOTO.blackPorsche} alt="" fill sizes="(max-width: 1355px) 100vw, 1315px" />
-          </div>
-          <div className="card showroom-card">
-            <div className="head" {...reveal("slide", 0.3)}>
-              <Eyebrow>Visit the Studio</Eyebrow>
-              <h2>715 Evans Court, Kelowna</h2>
-            </div>
-            <Link href={CONTACT.maps} target="_blank" rel="noopener noreferrer" className="showroom-link" {...reveal("slide", 0.4)}>
-              <Image src={PHOTO.handWash} alt="Directions to Auto Spa Kelowna on Google Maps" fill sizes="(max-width: 767px) 100vw, 480px" />
-              <div className="showroom-info">
-                <p className="medium">
-                  <MapPin className="location-icon" size={20} strokeWidth={1.75} aria-hidden />
-                  {CONTACT.address}
-                </p>
-                <p>{HOURS.map((h) => `${h.day}: ${h.time}`).join(" · ")}</p>
-              </div>
-            </Link>
-            <div {...reveal("slide", 0.5)}>
-              <Button href="/contact" className="btn-block">
-                Book a Visit
-              </Button>
-            </div>
-          </div>
-        </div>
+        </ul>
       </div>
     </section>
   );

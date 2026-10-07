@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Figtree } from "next/font/google";
 import { CONTACT, SITE } from "./brand";
 import { InlineScript } from "./inline-script";
-import { Footer } from "./site";
+import { Footer, Header } from "./site";
 import "./globals.css";
 
 const figtree = Figtree({
@@ -72,6 +72,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <div className="cursor-wrap" aria-hidden>
           <div className="cursor" />
         </div>
+        <Header />
         {children}
         <Footer />
       </body>
