@@ -46,7 +46,8 @@ export function Eyebrow({ children }: { children: string }) {
 }
 
 // Once-only scroll-into-view entrance; Effects adds `.in`, CSS does the rest.
-export function reveal(kind: "slide" | "fade" | "grow", delay = 0) {
+// image = noir curtain slides up + image settles; zoom = image settles only.
+export function reveal(kind: "slide" | "fade" | "grow" | "image" | "zoom", delay = 0) {
   return { "data-reveal": kind, style: { "--delay": `${delay}s` } as CSSProperties };
 }
 

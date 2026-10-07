@@ -131,3 +131,42 @@ export const socials = [
   { label: "Twitter (X)", href: "https://x.com/" },
   { label: "YouTube", href: "https://www.youtube.com/" },
 ];
+
+// ---------- About ----------
+export const about = {
+  heroDesktop: SITE + "687fc84c23d5fb7287cd0c1f_164b0bffe00e12cd2bc683d4842e6f35_about-hero-image.webp",
+  heroMobile: SITE + "687fc84c3b7cecdd65a16127_1cc45397564683110cde9e519fc47dd4_about-hero-image-mobile.webp",
+  image: SITE + "688292019565b1e744ae655b_fce264e3bb32f6e388130d0744209ea5_about-image.webp",
+  image2: SITE + "6882a7fdc7e009c59ddd6657_about-image-2.webp",
+  locationIcon: SITE + "6886135e186bbdce6c78c1d8_location-icon.svg",
+};
+
+export const brandLogos = [
+  "68832f5a8c97d105430b3a14_logo-1.svg",
+  "68832f5a5871c66e1e38c881_logo-2.svg",
+  "68832f5abbc5a6904ba0ea0d_logo-3.svg",
+  "68832f5a7aeb612c8caf6555_logo-4.svg",
+  "68832f5af9ee4b20d5a4ff4d_logo-5.svg",
+  "68832f5ab508642c85fa8b64_logo-6.svg",
+  "688335684e52cbd58020a75f_logo-7.svg",
+].map((f) => SITE + f);
+
+// Same counters as home; the About page relabels "Happy Clients".
+export const aboutMetrics = metrics.map((m) => (m.value === "99%" ? { ...m, label: "Clients Satisfaction" } : m));
+
+export const team = [
+  { name: "Ryan Cole", role: "Founder", photo: SITE + "6884899680fdbf02fad3fefb_ryan-cole.webp" },
+  { name: "Tina Raye", role: "Manager", photo: SITE + "688489960a6dfb673a503813_tina-raye.webp" },
+  { name: "Evan Holt", role: "Salesman", photo: SITE + "688489969f28b7a5ddd4a44d_evan-holt.webp" },
+  { name: "Cory Nash", role: "Mechanic", photo: SITE + "6884899611f8986a34bd0876_cory-nash.webp" },
+];
+
+// ---------- Contact ----------
+const methodNote = "Lorem ipsum dolor sit amet consectetur";
+export const contactMethods = [
+  { label: "+1 (123) 456-7890", href: "tel:+11234567890", icon: SITE + "688b67679f4ef91dabb51ef3_phone-icon.svg" },
+  { label: "info@rydex.com", href: "mailto:info@rydex.com", icon: SITE + "688b6c0364887f664293eb25_mail-icon-2.svg" },
+  { label: "Chat With Us", href: "https://whatsapp.com/", icon: SITE + "688b6c455785c8eea35fa228_message-icon.svg" },
+].map((m) => ({ ...m, note: methodNote }));
+
+export const checkIcon = SITE + "688b52b179e932cadc6cf114_40ab0c03ac8131cb7f388369776150f8_square-check.svg";
